@@ -1,0 +1,46 @@
+===========================================================================
+ELEC 475: Lab 2 - Comprehensive Model Complexity & FLOPs Benchmark
+Device        : cuda (Tesla T4)
+Dataset       : CIFAR10 (10 classes)
+Input Shape   : (1, 3, 64, 64)
+===========================================================================
+
+Instantiating models for profiling...
+Profiling FLOPs, Multiply-Accumulates, and Latency...
+Traceback (most recent call last):
+  File "/content/lab2_template/compare_models.py", line 62, in <module>
+    main()
+    ~~~~^^
+  File "/content/lab2_template/compare_models.py", line 51, in main
+    table_md = compare_model_complexities(models_dict, input_size=input_size, device=device)
+  File "/content/lab2_template/utils/profiler.py", line 244, in compare_model_complexities
+    latency, throughput = benchmark_inference(model, input_size=input_size, device=device, reps=50, warmup=10)
+                          ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/lab2_template/utils/profiler.py", line 207, in benchmark_inference
+    _ = model(dummy)
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/content/lab2_template/models/lenet.py", line 85, in forward
+    x = self.feature_extractor(x)
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py", line 1885, in _call_impl
+    return inner()
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py", line 1833, in inner
+    result = forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/container.py", line 253, in forward
+    input = module(input)
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py", line 1885, in _call_impl
+    return inner()
+  File "/usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py", line 1846, in inner
+    hook_result = hook(self, args, result)
+  File "/usr/local/lib/python3.13/dist-packages/thop/vision/basic_hooks.py", line 111, in count_avgpool
+    m.total_ops += calculate_avgpool(num_elements)
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
