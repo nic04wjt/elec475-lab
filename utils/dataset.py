@@ -36,6 +36,20 @@ def download_and_extract_tiny_imagenet(data_dir: str = "./data"):
     print("Extraction complete.")
     return target_dir
 
+def prepare_tiny_imagenet_val(tiny_dir: str) -> str:
+    """Sorts val/images/*.JPEG into val/<wnid>/ folders so ImageFolder can read the official 10k validation split."""
+    val_dir = os.path.join(tiny_dir, "val")
+    img_dir = os.path.join(val_dir, "images")
+    if not os.path.isdir(img_dir):
+        return val_dir  # already sorted
+    with open(os.path.join(val_dir, "val_annotations.txt")) as f:
+        for line in f:
+            fname, wnid = line.split("\t")[:2]
+            os.makedirs(os.path.join(val_dir, wnid), exist_ok=True)
+            os.rename(os.path.join(img_dir, fname), os.path.join(val_dir, wnid, fname))
+    os.rmdir(img_dir)
+    return val_dir
+
 def get_dataloaders(
     dataset: str = "cifar10",
     data_dir: str = "./data",
@@ -63,8 +77,10 @@ def get_dataloaders(
         train_tf = get_train_transforms("tiny_imagenet", augment=use_augmentation, target_size=target_size)
         val_tf   = get_test_transforms("tiny_imagenet", target_size=target_size)
 
+        val_dir = prepare_tiny_imagenet_val(tiny_dir)
+
         train_set = ImageFolder(root=train_dir, transform=train_tf)
-        val_set   = ImageFolder(root=train_dir, transform=val_tf)
+        val_set   = ImageFolder(root=val_dir, transform=val_tf)
         num_classes = 200
         classes = train_set.classes
 
